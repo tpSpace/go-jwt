@@ -51,3 +51,23 @@ func SignUp(c *gin.Context) {
 	// Save the user to the database
 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
 }
+
+func Login(c *gin.Context) {
+	// Get email/password from the request
+	var body struct {
+		Email string
+		Password string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to ead body"})
+		return
+	}
+	// Look up quested user in the database
+
+	// Compare sent in pass with saved user pass hash
+
+	// Generate a JWT token
+
+	// Send the token back to the user
+}
