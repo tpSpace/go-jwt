@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -91,7 +92,8 @@ func Login(c *gin.Context) {
 	})
 
 	//  Sign and get the complete encoded token as a string
-	tokenString, err := token.SignedString(os.Getenv("SECRET"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	fmt.Println(tokenString, err)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
@@ -99,5 +101,8 @@ func Login(c *gin.Context) {
 	}
 
 	// Send the token back to the user
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 60 * 60 * 24 * 30, "", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{})
 }
